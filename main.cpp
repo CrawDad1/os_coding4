@@ -1,21 +1,55 @@
 #include <iostream>
 #include <deque>
-
-// Test inclusions
-// #include "fifo.cpp"
-// #include "lru.cpp"
-// #include "opt.cpp"
 #include "page_controller.cpp"
-
 using namespace std;
-int main(){
+
+
+void parse_input(int argc, char* argv[], int& max_frames, deque<int>& page_string){
+
+    if(argc==1){
+        cout << "Using example values: \n\n";
+
+        page_string = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5};
+        max_frames = 4;
+        return;
+    }
+    // debug
+    cout << "\n" << argv[1] << "\n";
+
+    if(argv[1] == string("-h")){
+        // print help and exit
+        cout << "This program simulates page replacement algorithms.\n\n"
+        << "usage: main.exe [max number of frames] [page list]\n"
+        << "\t<page list>: a space spearated list of integers.\n"
+        << "\n\n passing no arguments runs an example data set.\n";
+
+        exit(0);
+    }
+
+    max_frames = stoi(argv[1]);
+
+    for(int i = 2; i < argc; i++){
+        try
+        {
+            page_string.push_back(stoi(argv[i]));
+        }
+        catch(const std::exception& e)
+        {
+            cout << "Unsupported input in arguments. Please provide a space separated list of integers.";
+            exit(1);
+        }
+    }
+}
+
+
+
+int main(int argc, char* argv[]){
     /*Entry point for program*/
 
-    // inputs
-    // Page reference string: 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5
-    // Number of frames: 4
-    deque<int> page_string = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5};
-    int max_frames = 4;
+    deque<int> page_string;
+    int max_frames;
+
+    parse_input(argc, argv, max_frames, page_string);
 
     // FIFO algorithm
     cout << "For FIFO algorithm: " << endl;
