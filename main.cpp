@@ -13,6 +13,7 @@ void parse_input(int argc, char* argv[], int& max_frames, deque<int>& page_strin
         max_frames = 4;
         return;
     }
+
     // debug
     cout << "\n" << argv[1] << "\n";
 
