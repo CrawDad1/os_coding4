@@ -2,9 +2,10 @@
 #include <deque>
 
 // Test inclusions
-#include "fifo.cpp"
-#include "lru.cpp"
-#include "opt.cpp"
+// #include "fifo.cpp"
+// #include "lru.cpp"
+// #include "opt.cpp"
+#include "page_controller.cpp"
 
 using namespace std;
 int main(){

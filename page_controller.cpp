@@ -2,17 +2,17 @@
 #include <deque>
 using namespace std;
 
-class opt_controller{
-    /*class for implementing opt page replacement algorithm*/
+class page_controller{
+    /*Base class for page_controller algorithmss*/
+    protected:
     deque<int> page_table;
     int max_pages;
     int total_faults;
 
     public:
-    opt_controller(int max):max_pages{max}, total_faults{0}, page_table{deque<int>()}{
+    page_controller(int max):max_pages{max}, total_faults{0}, page_table{deque<int>()}{
     };
-    
-    
+
     int get_total_faults(){
         return this->total_faults;
     }
@@ -36,6 +36,83 @@ class opt_controller{
 
         return;
     }
+    
+    virtual void reference(int page_number){};
+};
+
+class fifo_controller: public page_controller{
+    /*class for implementing fifo page replacement algorithm*/
+
+    public:
+    fifo_controller(int max):page_controller(max){};
+    
+    void reference(int page_number) override{
+        /*checks page_table for requested page and handles miss*/
+        
+        for(auto& i: this->page_table){
+            if (i == page_number){
+                print_status(true, page_number);
+                return;
+            }
+        }
+
+        this->total_faults++;
+        if (this->page_table.size() < this->max_pages){
+            // add new frame
+            this->page_table.push_back(page_number);
+        }
+        else{
+            // perform fifo shift
+            // this->page_table.erase(this->page_table.begin());
+            this->page_table.pop_front();
+            this->page_table.push_back(page_number);
+        }
+
+        print_status(false, page_number);
+        return;
+    }
+};
+
+class lru_controller: public page_controller{
+    /*class for implementing lru page replacement algorithm*/
+    public:
+    lru_controller(int max):page_controller(max){};
+
+    void reference(int page_number) override{
+        /*checks page_table for requested page and handles miss*/
+        
+        for(auto i = this->page_table.begin(); i < this->page_table.end(); i++){
+            if (*i == page_number){
+                // page hit
+                // move to first frame
+                this->page_table.push_front(*i);
+                this->page_table.erase(i);
+
+                print_status(true, page_number);
+                return;
+            }
+        }
+
+        this->total_faults++;
+        if (this->page_table.size() < this->max_pages){
+            // add new frame
+            this->page_table.push_front(page_number);
+        }
+        else{
+            // perform lru shift
+            this->page_table.pop_back();
+            this->page_table.push_front(page_number);
+        }
+
+        print_status(false, page_number);
+        return;
+    }
+};
+
+class opt_controller: public page_controller{
+    /*class for implementing opt page replacement algorithm*/
+    public:
+    opt_controller(int max):page_controller(max){};
 
     void delete_furthest(const deque<int>& page_string){
         int curr_dist = -1;
@@ -62,6 +139,10 @@ class opt_controller{
 
         // delete the location in the page tblae with the longest distance to next page hit
         this->page_table.erase(max_it);
+    }
+
+    void refrence(int page_number){
+        cout << "This algorithm does not support single number reference.\n";
     }
     
     void reference(const deque<int>& page_string){
