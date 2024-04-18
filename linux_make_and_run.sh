@@ -1,6 +1,5 @@
 echo "compiling program... "
-
-g++ *.cpp -o main.exe
+g++ page_controller.cpp main.cpp -o main.exe
 
 echo "runing program... "
-.\main.exe
+./main.exe
